@@ -190,6 +190,8 @@ RTC::ReturnCode_t Intermittent_Crawl_Gait_Controller::onActivated(RTC::UniqueId 
 	robot.icw_obj->setSideMoveDistance(m_side_move_distance);
 	robot.setLiftHeight(m_lift_height);
 
+	m_Trajectory.leg_data.length(4);
+
   return RTC::RTC_OK;
 }
 
