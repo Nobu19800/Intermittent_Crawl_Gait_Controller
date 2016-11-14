@@ -45,7 +45,7 @@ Direction_Object::Direction_Object(double vx, double vy, double dthe, Leg_Object
 
 	pos_distance = sqrt(pos(0)*pos(0) + pos(1)*pos(1));
 	leg_distance = sqrt(legs[0].center_pos(0)*legs[0].center_pos(0) + legs[0].center_pos(1)*legs[0].center_pos(1));
-	//std::cout << leg_distance << "\t" << pos_distance << std::endl;
+	//std::cout << vx << "\t" << dthe << "\t" << leg_distance << "\t" << pos_distance << std::endl;
 	//if (dir == WALK_STOP)
 	{
 		if (leg_distance > pos_distance)

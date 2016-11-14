@@ -145,10 +145,13 @@ void IntermittentCrawlGait::walk(double vx, double vy, double dthe, double sd)
 		}
 
 	}
+	
 	body->update_status(dthe, mc);
-
 	if (dir == d.dir)
+	{
+		
 		body->setRotateStatus(d.pos, dthe, mc, sampling_time, false);
+	}
 
 	/*for (int i = 0; i < 4; i++)
 	{

@@ -109,11 +109,12 @@ Four_legged_Robot::Four_legged_Robot()
 		}
 	}*/
 
-
+	setMotorOffset(MOTOR_OFFSET_0, MOTOR_OFFSET_1, MOTOR_OFFSET_2);
+	setMotorLimit(MOTOR_UPPER__LIMIT_0, MOTOR_UPPER__LIMIT_1, MOTOR_UPPER__LIMIT_2, MOTOR_LOWER__LIMIT_0, MOTOR_LOWER__LIMIT_1, MOTOR_LOWER__LIMIT_2);
 
 	//body.set_position(Vector3d(BodyPositon_X, BodyPositon_Y, BodyPositon_Z));
 
-	for (int i = 0; i < 4; i++)
+	/*for (int i = 0; i < 4; i++)
 	{
 		legs[i].setJointOffset(MOTOR_OFFSET_0, MOTOR_OFFSET_1, MOTOR_OFFSET_2);
 		legs[i].setUpperLimitJoint(MOTOR_UPPER__LIMIT_0, MOTOR_UPPER__LIMIT_1, MOTOR_UPPER__LIMIT_2);
@@ -127,7 +128,7 @@ Four_legged_Robot::Four_legged_Robot()
 		legs[i].LowerLimitJoint[0] = MOTOR_LOWER__LIMIT_0;
 		legs[i].LowerLimitJoint[1] = MOTOR_LOWER__LIMIT_1;
 		legs[i].LowerLimitJoint[2] = MOTOR_LOWER__LIMIT_2;*/
-	}
+	//}
 
 
 
@@ -821,3 +822,60 @@ void Four_legged_Robot::setPose()
 }
 
 
+
+
+void Four_legged_Robot::setMotorOffset(double offset0, double offset1, double offset2)
+{
+	for (int i = 0; i < 4; i++)
+	{
+		legs[i].setJointOffset(offset0, offset1, offset2);
+	}
+}
+
+void Four_legged_Robot::setMotorLimit(double upper_limit0, double upper_limit1, double upper_limit2, double lower_limit0, double lower_limit1, double lower_limit2)
+{
+	for (int i = 0; i < 4; i++)
+	{
+		legs[i].setUpperLimitJoint(upper_limit0, upper_limit1, upper_limit2);
+		legs[i].setLowerLimitJoint(lower_limit0, lower_limit1, lower_limit2);
+	}
+}
+
+bool Four_legged_Robot::limitOver(std::vector<double> &t0, std::vector<double> &t1, std::vector<double> &t2, std::vector<double> &t3)
+{
+	bool ret = false;
+
+	t0[0] = t0[0] - M_PI / 2.0;
+	t0[1] = t0[1] - M_PI / 2.0;
+	t0[2] = t0[2] - M_PI / 2.0;
+
+	t1[0] = t1[0] - M_PI / 2.0;
+	t1[1] = t1[1] - M_PI / 2.0;
+	t1[2] = t1[2] - M_PI / 2.0;
+
+	t2[0] = t2[0] + M_PI / 2.0;
+	t2[1] = t2[1] - M_PI / 2.0;
+	t2[2] = t2[2] - M_PI / 2.0;
+
+	t3[0] = t3[0] + M_PI / 2.0;
+	t3[1] = t3[1] - M_PI / 2.0;
+	t3[2] = t3[2] - M_PI / 2.0;
+
+	if (legs[0].setAngle(t0))
+	{
+		ret = true;
+	}
+	if (legs[1].setAngle(t1))
+	{
+		ret = true;
+	}
+	if (legs[2].setAngle(t2))
+	{
+		ret = true;
+	}
+	if (legs[3].setAngle(t3))
+	{
+		ret = true;
+	}
+	return false;
+}

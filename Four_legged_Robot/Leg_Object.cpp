@@ -368,14 +368,25 @@ Vector3d Leg_Object::calcKinematics(std::vector<double> the)
 /**
 *@brief 回転速度、ステップ数の再設定
 *@param rv 回転速度
+*@param len 回転中心までの長さ
 *@param mc ステップ数
 */
 void Leg_Object::update_status(double rv, int mc)
 {
+
 	count = count * mc / max_count;
 	offset_count = offset_count * mc / max_count;
+
+	rotete_vel = rotete_vel * max_count / mc;
+	
 	max_count = mc;
-	rotete_vel = rv;
+	/*
+	if (rv*rotete_vel >= 0)rotete_vel = rv;
+	else rotete_vel = -rv;
+	*/
+	
+	//rotate_len = len;
+	//std::cout << count << "\t" << offset_count << "\t" << max_count << std::endl;
 }
 
 /**
@@ -423,4 +434,33 @@ void Leg_Object::setLowerLimitJoint(double l0, double l1, double l2)
 	LowerLimitJoint[0] = l0;
 	LowerLimitJoint[1] = l1;
 	LowerLimitJoint[2] = l2;
+}
+
+
+/**
+*@brief 関節角度の設定
+*@param t 関節角度
+*@return trueの場合は可動範囲外
+*/
+bool Leg_Object::setAngle(std::vector<double> t)
+{
+	bool  ret = false;
+	for (int i = 0; i < 3; i++)
+	{
+		if (UpperLimitJoint[i] < t[i])
+		{
+			theta[i] = UpperLimitJoint[i];
+			ret = true;
+		}
+		else if (LowerLimitJoint[i] > t[i])
+		{
+			theta[i] = UpperLimitJoint[i];
+			ret = true;
+		}
+		else
+		{
+			theta[i] = t[i];
+		}
+	}
+	return ret;
 }

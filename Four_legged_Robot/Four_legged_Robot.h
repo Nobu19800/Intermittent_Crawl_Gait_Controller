@@ -188,7 +188,32 @@ public:
 	*@brief 設定したリンクパラメータから位置、姿勢を再計算
 	*/
 	void setPose();
-	
+	/**
+	*@brief 関節オフセット設定
+	*@param offset0 関節0のオフセット
+	*@param offset1 関節1のオフセット
+	*@param offset2 関節2のオフセット
+	*/
+	void setMotorOffset(double offset0, double offset1, double offset2);
+	/**
+	*@brief 足裏のパラメータ設定
+	*@param upper_limit0 関節0の上限
+	*@param upper_limit1 関節1の上限
+	*@param upper_limit2 関節2の上限
+	*@param lower_limit0 関節0の下限
+	*@param lower_limit1 関節1の下限
+	*@param lower_limit2 関節2の下限
+	*/
+	void setMotorLimit(double upper_limit0, double upper_limit1, double upper_limit2, double lower_limit0, double lower_limit1, double lower_limit2);
+	/**
+	*@brief 関節角度が可動範囲内かの判定
+	*@param t0 脚0の関節角度
+	*@param t1 脚1の関節角度
+	*@param t2 脚2の関節角度
+	*@param t3 脚3の関節角度
+	*@return trueの場合は可動範囲外
+	*/
+	bool limitOver(std::vector<double> &t0, std::vector<double> &t1, std::vector<double> &t2, std::vector<double> &t3);
 	Leg_Object legs[4];
 	Body_Object body;
 	

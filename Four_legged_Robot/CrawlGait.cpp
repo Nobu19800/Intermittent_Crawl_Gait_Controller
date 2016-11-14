@@ -92,25 +92,28 @@ void CrawlGait::walk(double vx, double vy, double dthe, double sd)
 
 
 
-
-
+	//std::cout << mc << "\t" << dthe << std::endl;
+	//std::cout << dir << "\t" << d.dir << std::endl;
 	for (int i = 0; i < 4; i++)
 	{
 		legs[i].update_status(dthe, mc);
 		if (dir == d.dir)
 		{
-
+			
 			legs[i].setRotateStatus(d.pos, dthe, mc, sampling_time, false);
 
 		}
 
 	}
+	//std::cout << dir << "\t" << d.dir << std::endl;
 	
 	body->update_status(dthe, mc);
-	
+	//std::cout << dir << "\t" << d.dir << "\t" << dthe << "\t" << L_max << std::endl;
 	if (dir == d.dir)
+	{
+		//std::cout << "update" << std::endl;
 		body->setRotateStatus(d.pos, dthe, mc, sampling_time, false);
-	
+	}
 
 	for (int i = 0; i < 4; i++)
 	{
@@ -137,20 +140,22 @@ void CrawlGait::walk(double vx, double vy, double dthe, double sd)
 
 	//std::cout << dir << std::endl;
 
-
+	
 	if (dir != d.dir)
 	{
 		for (int i = 0; i < 4; i++)
 		{
 			legs[i].set_state(MOVE_STOP);
 			legs[i].count = 0;
+			
 		}
 		body->set_state(MOVE_STOP);
 		body->count = 0;
+		
 	}
 	dir = d.dir;
 
-
+	
 
 	if (dir == WALK_FORWORD)
 	{
@@ -477,7 +482,139 @@ void CrawlGait::walk(double vx, double vy, double dthe, double sd)
 
 	else if (dir == WALK_RIGHT)
 	{
+		if (state == UP_FRONT_RIGHT_LEG)state = UP_BACK_LEFT_LEG;
+		else if (state == UP_BACK_LEFT_LEG)state = UP_BACK_RIGHT_LEG;
+		else if (state == UP_BACK_RIGHT_LEG)state = UP_FRONT_LEFT_LEG;
+		else if (state == UP_FRONT_LEFT_LEG)state = UP_FRONT_RIGHT_LEG;
+		else if (state == MOVE_STABILITY)state = next_state;
 
+
+		if (state == UP_FRONT_LEFT_LEG)
+		{
+			legs[0].set_state(NOT_ON_GROUND_CRAWL);
+			if (Leg_Object::LegsStop(legs, 4) == 0)
+			{
+				for (int i = 0; i < 4; i++)
+				{
+					if (i != 0)legs[i].set_state(ON_GROUND_CRAWL);
+				}
+				body->set_state(ON_GROUND_CRAWL);
+				body->setRotateStatus(d.pos, dthe, mc, sampling_time);
+			}
+
+
+
+			legs[0].offset_count = (int)(mc*(-1.5));
+			legs[1].offset_count = (int)(mc*(0.5));
+			legs[2].offset_count = (int)(mc*(1.5));
+			legs[3].offset_count = (int)(mc*(-0.5));
+
+			for (int i = 0; i < 4; i++)
+			{
+				if (Leg_Object::LegsStop(legs, 4) <= 1)
+					legs[i].setRotateStatus(d.pos, dthe, mc, sampling_time);
+				else
+					legs[i].setRotateStatus(d.pos, dthe, mc, sampling_time, true, 1.0 - (1.0 / 3.0*(double)(Leg_Object::LegsStop(legs, 4) - 1)));
+			}
+
+			judge_Stability(mc);
+
+		}
+		else if (state == UP_BACK_LEFT_LEG)
+		{
+			legs[1].set_state(NOT_ON_GROUND_CRAWL);
+			if (Leg_Object::LegsStop(legs, 4) == 0)
+			{
+				for (int i = 0; i < 4; i++)
+				{
+					if (i != 1)legs[i].set_state(ON_GROUND_CRAWL);
+				}
+				body->set_state(ON_GROUND_CRAWL);
+				body->setRotateStatus(d.pos, dthe, mc, sampling_time);
+			}
+
+
+
+			legs[0].offset_count = (int)(mc*(0.5));
+			legs[1].offset_count = (int)(mc*(-1.5));
+			legs[2].offset_count = (int)(mc*(-0.5));
+			legs[3].offset_count = (int)(mc*(1.5));
+
+			legs[1].setRotateStatus(d.pos, dthe, mc, sampling_time);
+			for (int i = 0; i < 4; i++)
+			{
+				if (Leg_Object::LegsStop(legs, 4) <= 1)
+					legs[i].setRotateStatus(d.pos, dthe, mc, sampling_time);
+				else
+					legs[i].setRotateStatus(d.pos, dthe, mc, sampling_time, true, 1.0 - (1.0 / 3.0*(double)(Leg_Object::LegsStop(legs, 4) - 1)));
+			}
+
+			judge_Stability(mc);
+
+		}
+		else if (state == UP_BACK_RIGHT_LEG)
+		{
+			legs[2].set_state(NOT_ON_GROUND_CRAWL);
+			if (Leg_Object::LegsStop(legs, 4) == 0)
+			{
+				for (int i = 0; i < 4; i++)
+				{
+					if (i != 2)legs[i].set_state(ON_GROUND_CRAWL);
+				}
+				body->set_state(ON_GROUND_CRAWL);
+				body->setRotateStatus(d.pos, dthe, mc, sampling_time);
+			}
+
+
+			legs[0].offset_count = (int)(mc*(-0.5));
+			legs[1].offset_count = (int)(mc*(1.5));
+			legs[2].offset_count = (int)(mc*(-1.5));
+			legs[3].offset_count = (int)(mc*(0.5));
+
+			for (int i = 0; i < 4; i++)
+			{
+				if (Leg_Object::LegsStop(legs, 4) <= 1)
+					legs[i].setRotateStatus(d.pos, dthe, mc, sampling_time);
+				else
+					legs[i].setRotateStatus(d.pos, dthe, mc, sampling_time, true, 1.0 - (1.0 / 3.0*(double)(Leg_Object::LegsStop(legs, 4) - 1)));
+			}
+
+			judge_Stability(mc);
+
+
+		}
+		else if (state == UP_FRONT_RIGHT_LEG)
+		{
+			legs[3].set_state(NOT_ON_GROUND_CRAWL);
+			if (Leg_Object::LegsStop(legs, 4) == 0)
+			{
+				for (int i = 0; i < 4; i++)
+				{
+					if (i != 3)legs[i].set_state(ON_GROUND_CRAWL);
+				}
+				body->set_state(ON_GROUND_CRAWL);
+				body->setRotateStatus(d.pos, dthe, mc, sampling_time);
+			}
+
+
+			legs[0].offset_count = (int)(mc*(1.5));
+			legs[1].offset_count = (int)(mc*(-0.5));
+			legs[2].offset_count = (int)(mc*(0.5));
+			legs[3].offset_count = (int)(mc*(-1.5));
+
+			for (int i = 0; i < 4; i++)
+			{
+				if (Leg_Object::LegsStop(legs, 4) <= 1)
+					legs[i].setRotateStatus(d.pos, dthe, mc, sampling_time);
+				else
+					legs[i].setRotateStatus(d.pos, dthe, mc, sampling_time, true, 1.0 - (1.0 / 3.0*(double)(Leg_Object::LegsStop(legs, 4) - 1)));
+			}
+
+			judge_Stability(mc);
+
+
+		}
+		/*
 		if (state == UP_FRONT_RIGHT_LEG)state = UP_FRONT_LEFT_LEG;
 		else if (state == UP_FRONT_LEFT_LEG)state = UP_BACK_RIGHT_LEG;
 		else if (state == UP_BACK_RIGHT_LEG)state = UP_BACK_LEFT_LEG;
@@ -610,11 +747,144 @@ void CrawlGait::walk(double vx, double vy, double dthe, double sd)
 			
 
 		}
+		*/
 	}
 
 	else if (dir == WALK_LEFT)
 	{
+		if (state == UP_FRONT_RIGHT_LEG)state = UP_FRONT_LEFT_LEG;
+		else if (state == UP_FRONT_LEFT_LEG)state = UP_BACK_RIGHT_LEG;
+		else if (state == UP_BACK_RIGHT_LEG)state = UP_BACK_LEFT_LEG;
+		else if (state == UP_BACK_LEFT_LEG)state = UP_FRONT_RIGHT_LEG;
+		else if (state == MOVE_STABILITY)state = next_state;
 
+
+
+		if (state == UP_FRONT_LEFT_LEG)
+		{
+			legs[0].set_state(NOT_ON_GROUND_CRAWL);
+			if (Leg_Object::LegsStop(legs, 4) == 0)
+			{
+				for (int i = 0; i < 4; i++)
+				{
+					if (i != 0)legs[i].set_state(ON_GROUND_CRAWL);
+				}
+				body->set_state(ON_GROUND_CRAWL);
+				body->setRotateStatus(d.pos, dthe, mc, sampling_time);
+			}
+
+
+			legs[0].offset_count = (int)(mc*(-1.5));
+			legs[1].offset_count = (int)(mc*(0.5));
+			legs[2].offset_count = (int)(mc*(-0.5));
+			legs[3].offset_count = (int)(mc*(1.5));
+
+			for (int i = 0; i < 4; i++)
+			{
+				if (Leg_Object::LegsStop(legs, 4) <= 1)
+					legs[i].setRotateStatus(d.pos, dthe, mc, sampling_time);
+				else
+					legs[i].setRotateStatus(d.pos, dthe, mc, sampling_time, true, 1.0 - (1.0 / 3.0*(double)(Leg_Object::LegsStop(legs, 4) - 1)));
+			}
+
+			judge_Stability(mc);
+
+		}
+		else if (state == UP_BACK_LEFT_LEG)
+		{
+			legs[1].set_state(NOT_ON_GROUND_CRAWL);
+			if (Leg_Object::LegsStop(legs, 4) == 0)
+			{
+				for (int i = 0; i < 4; i++)
+				{
+					if (i != 1)legs[i].set_state(ON_GROUND_CRAWL);
+				}
+				body->set_state(ON_GROUND_CRAWL);
+				body->setRotateStatus(d.pos, dthe, mc, sampling_time);
+			}
+
+
+
+			legs[0].offset_count = (int)(mc*(0.5));
+			legs[1].offset_count = (int)(mc*(-1.5));
+			legs[2].offset_count = (int)(mc*(1.5));
+			legs[3].offset_count = (int)(mc*(-0.5));
+
+			for (int i = 0; i < 4; i++)
+			{
+				if (Leg_Object::LegsStop(legs, 4) <= 1)
+					legs[i].setRotateStatus(d.pos, dthe, mc, sampling_time);
+				else
+					legs[i].setRotateStatus(d.pos, dthe, mc, sampling_time, true, 1.0 - (1.0 / 3.0*(double)(Leg_Object::LegsStop(legs, 4) - 1)));
+			}
+
+			judge_Stability(mc);
+
+		}
+		else if (state == UP_BACK_RIGHT_LEG)
+		{
+			legs[2].set_state(NOT_ON_GROUND_CRAWL);
+			if (Leg_Object::LegsStop(legs, 4) == 0)
+			{
+				for (int i = 0; i < 4; i++)
+				{
+					if (i != 2)legs[i].set_state(ON_GROUND_CRAWL);
+				}
+				body->set_state(ON_GROUND_CRAWL);
+				body->setRotateStatus(d.pos, dthe, mc, sampling_time);
+			}
+
+
+
+			legs[0].offset_count = (int)(mc*(1.5));
+			legs[1].offset_count = (int)(mc*(-0.5));
+			legs[2].offset_count = (int)(mc*(-1.5));
+			legs[3].offset_count = (int)(mc*(0.5));
+
+			for (int i = 0; i < 4; i++)
+			{
+				if (Leg_Object::LegsStop(legs, 4) <= 1)
+					legs[i].setRotateStatus(d.pos, dthe, mc, sampling_time);
+				else
+					legs[i].setRotateStatus(d.pos, dthe, mc, sampling_time, true, 1.0 - (1.0 / 3.0*(double)(Leg_Object::LegsStop(legs, 4) - 1)));
+			}
+
+			judge_Stability(mc);
+
+
+		}
+		else if (state == UP_FRONT_RIGHT_LEG)
+		{
+			legs[3].set_state(NOT_ON_GROUND_CRAWL);
+			if (Leg_Object::LegsStop(legs, 4) == 0)
+			{
+				for (int i = 0; i < 4; i++)
+				{
+					if (i != 3)legs[i].set_state(ON_GROUND_CRAWL);
+				}
+				body->set_state(ON_GROUND_CRAWL);
+				body->setRotateStatus(d.pos, dthe, mc, sampling_time);
+			}
+
+
+			legs[0].offset_count = (int)(mc*(-0.5));
+			legs[1].offset_count = (int)(mc*(1.5));
+			legs[2].offset_count = (int)(mc*(0.5));
+			legs[3].offset_count = (int)(mc*(-1.5));
+
+			for (int i = 0; i < 4; i++)
+			{
+				if (Leg_Object::LegsStop(legs, 4) <= 1)
+					legs[i].setRotateStatus(d.pos, dthe, mc, sampling_time);
+				else
+					legs[i].setRotateStatus(d.pos, dthe, mc, sampling_time, true, 1.0 - (1.0 / 3.0*(double)(Leg_Object::LegsStop(legs, 4) - 1)));
+			}
+
+			judge_Stability(mc);
+
+
+		}
+		/*
 		if (state == UP_FRONT_RIGHT_LEG)state = UP_BACK_LEFT_LEG;
 		else if (state == UP_BACK_LEFT_LEG)state = UP_BACK_RIGHT_LEG;
 		else if (state == UP_BACK_RIGHT_LEG)state = UP_FRONT_LEFT_LEG;
@@ -747,6 +1017,7 @@ void CrawlGait::walk(double vx, double vy, double dthe, double sd)
 			
 
 		}
+		*/
 	}
 
 	else if (dir == WALK_ROT_PLUS)

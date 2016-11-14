@@ -90,6 +90,7 @@ public:
 	/**
 	*@brief 回転速度、ステップ数の再設定
 	*@param rv 回転速度
+	*@param len 回転中心までの長さ
 	*@param mc ステップ数
 	*/
 	void update_status(double rv, int mc);
@@ -136,7 +137,13 @@ public:
 	*@param o1 ジョイント2の可動範囲下限値
 	*/
 	void setLowerLimitJoint(double l0, double l1, double l2);
-	
+	/**
+	*@brief 関節角度の設定
+	*@param t 関節角度
+	*@return trueの場合は可動範囲外
+	*/
+	bool setAngle(std::vector<double> t);
+
 	Vector3d pos[3];
 	Vector3d pos_offset[3];
 	Vector3d joint_pos[3];
