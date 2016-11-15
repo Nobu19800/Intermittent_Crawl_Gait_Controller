@@ -192,6 +192,10 @@ RTC::ReturnCode_t Intermittent_Crawl_Gait_Controller::onActivated(RTC::UniqueId 
 
 	m_Trajectory.leg_data.length(4);
 
+	m_target_velocity.data.vx = 0;
+	m_target_velocity.data.va = 0;
+	m_target_velocity.data.va = 0;
+
   return RTC::RTC_OK;
 }
 
@@ -215,39 +219,40 @@ RTC::ReturnCode_t Intermittent_Crawl_Gait_Controller::onExecute(RTC::UniqueId ec
 	}
 	if (m_target_velocityIn.isNew()){
 		while (m_target_velocityIn.isNew())m_target_velocityIn.read();
-		robot.intermittent_crawl_gait(m_target_velocity.data.vx, m_target_velocity.data.vy, m_target_velocity.data.va, m_stride);
-		/*m_Trajectory.leg_data[0].pose.position.x = robot.legs[0].current_pos(0);
-		m_Trajectory.leg_data[0].pose.position.y = robot.legs[0].current_pos(1);
-		m_Trajectory.leg_data[0].pose.position.z = robot.legs[0].current_pos(2);
-
-		m_Trajectory.leg_data[1].pose.position.x = robot.legs[1].current_pos(0);
-		m_Trajectory.leg_data[1].pose.position.y = robot.legs[1].current_pos(1);
-		m_Trajectory.leg_data[1].pose.position.z = robot.legs[1].current_pos(2);
-
-		m_Trajectory.leg_data[2].pose.position.x = robot.legs[2].current_pos(0);
-		m_Trajectory.leg_data[2].pose.position.y = robot.legs[2].current_pos(1);
-		m_Trajectory.leg_data[2].pose.position.z = robot.legs[2].current_pos(2);
-
-		m_Trajectory.leg_data[3].pose.position.x = robot.legs[3].current_pos(0);
-		m_Trajectory.leg_data[3].pose.position.y = robot.legs[3].current_pos(1);
-		m_Trajectory.leg_data[3].pose.position.z = robot.legs[3].current_pos(2);*/
-		
-		for(int i=0;i < 4;i++)
-		{
-			m_Trajectory.leg_data[i].pose.position.x = robot.legs[i].current_pos(0);
-			m_Trajectory.leg_data[i].pose.position.y = robot.legs[i].current_pos(1);
-			m_Trajectory.leg_data[i].pose.position.z = robot.legs[i].current_pos(2);
-		}
-
-		m_Trajectory.body_pose.position.x = robot.body.current_pos(0);
-		m_Trajectory.body_pose.position.y = robot.body.current_pos(1);
-		m_Trajectory.body_pose.position.z = robot.body.current_pos(2);
-
-		setTimestamp(m_Trajectory);
-		m_TrajectoryOut.write();
-
-
 	}
+	robot.intermittent_crawl_gait(m_target_velocity.data.vx, m_target_velocity.data.vy, m_target_velocity.data.va, m_stride);
+	/*m_Trajectory.leg_data[0].pose.position.x = robot.legs[0].current_pos(0);
+	m_Trajectory.leg_data[0].pose.position.y = robot.legs[0].current_pos(1);
+	m_Trajectory.leg_data[0].pose.position.z = robot.legs[0].current_pos(2);
+
+	m_Trajectory.leg_data[1].pose.position.x = robot.legs[1].current_pos(0);
+	m_Trajectory.leg_data[1].pose.position.y = robot.legs[1].current_pos(1);
+	m_Trajectory.leg_data[1].pose.position.z = robot.legs[1].current_pos(2);
+
+	m_Trajectory.leg_data[2].pose.position.x = robot.legs[2].current_pos(0);
+	m_Trajectory.leg_data[2].pose.position.y = robot.legs[2].current_pos(1);
+	m_Trajectory.leg_data[2].pose.position.z = robot.legs[2].current_pos(2);
+
+	m_Trajectory.leg_data[3].pose.position.x = robot.legs[3].current_pos(0);
+	m_Trajectory.leg_data[3].pose.position.y = robot.legs[3].current_pos(1);
+	m_Trajectory.leg_data[3].pose.position.z = robot.legs[3].current_pos(2);*/
+	
+	for(int i=0;i < 4;i++)
+	{
+		m_Trajectory.leg_data[i].pose.position.x = robot.legs[i].current_pos(0);
+		m_Trajectory.leg_data[i].pose.position.y = robot.legs[i].current_pos(1);
+		m_Trajectory.leg_data[i].pose.position.z = robot.legs[i].current_pos(2);
+	}
+
+	m_Trajectory.body_pose.position.x = robot.body.current_pos(0);
+	m_Trajectory.body_pose.position.y = robot.body.current_pos(1);
+	m_Trajectory.body_pose.position.z = robot.body.current_pos(2);
+
+	setTimestamp(m_Trajectory);
+	m_TrajectoryOut.write();
+
+
+	
 	m_current_pose.data.position.x = robot.body.current_pos(0);
 	m_current_pose.data.position.y = robot.body.current_pos(0);
 	m_current_pose.data.heading = robot.body.current_rot(2);
