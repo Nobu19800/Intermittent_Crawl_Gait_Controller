@@ -176,9 +176,7 @@ Four_legged_Robot::Four_legged_Robot(Four_legged_Robot &fo)
 	icw_obj = new IntermittentCrawlGait(legs, &body);
 	trot_obj = new TrotGait(legs, &body);
 
-	memcpy(cw_obj, fo.cw_obj, sizeof(cw_obj));
-	memcpy(icw_obj, fo.icw_obj, sizeof(cw_obj));
-	memcpy(trot_obj, fo.trot_obj, sizeof(cw_obj));
+	
 
 }
 
