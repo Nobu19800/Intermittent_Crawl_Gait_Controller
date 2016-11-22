@@ -36,6 +36,28 @@ Leg_Object::Leg_Object()
 	{
 		theta[i] = 0;
 	}
+
+	foot_mass = 0;
+	foot_width = 0;
+	foot_len = 0;
+	foot_height = 0;
+	for (int i = 0; i < 3; i++)
+	{
+		leg_len[i] = 0;
+		leg_width[i] = 0;
+		leg_height[i] = 0;
+		leg_mass[i] = 0;
+		jointOffset[i] = 0;
+		UpperLimitJoint[i] = 0;
+		LowerLimitJoint[i] = 0;
+		
+	}
+	offset_angle = 0;
+	rotate_len = 0;
+	rotete_vel = 0;
+	step_time = 0;
+	start_angle = 0;
+	
 	reset_offset();
 }
 

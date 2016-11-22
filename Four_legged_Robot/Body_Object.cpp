@@ -28,6 +28,14 @@ Body_Object::Body_Object()
 	intermittent_x_offset = 0;
 	intermittent_y_offset = 0;
 
+	rotete_vel = 0;
+	lx = 0;
+	ly = 0;
+	lz = 0;
+	mass = 0;
+	last_state = MOVE_STOP;
+	rotate_len = 0;
+	offset_angle = 0;
 
 
 	set_position(Vector3d(0, 0, 0));

@@ -162,6 +162,27 @@ Four_legged_Robot::Four_legged_Robot()
 }
 
 /**
+*@brief コピーコンストラクタ
+*/
+Four_legged_Robot::Four_legged_Robot(Four_legged_Robot &fo)
+{
+	for (int i = 0; i < 4; i++)
+	{
+		legs[i] = fo.legs[i];
+	}
+	body = fo.body;
+
+	cw_obj = new CrawlGait(legs, &body);
+	icw_obj = new IntermittentCrawlGait(legs, &body);
+	trot_obj = new TrotGait(legs, &body);
+
+	memcpy(cw_obj, fo.cw_obj, sizeof(cw_obj));
+	memcpy(icw_obj, fo.icw_obj, sizeof(cw_obj));
+	memcpy(trot_obj, fo.trot_obj, sizeof(cw_obj));
+
+}
+
+/**
 *@brief デストラクタ
 */
 Four_legged_Robot::~Four_legged_Robot()
@@ -508,11 +529,8 @@ void Four_legged_Robot::setLinkParam(Vector3d size, Vector3d offset, double mass
 			legs[i].pos_offset[num](0) = -offset(0);
 			legs[i].pos_offset[num](1) = -offset(1);
 		}
-		else if (num == 1)
-		{
-			legs[i].pos_offset[num](1) = -offset(1);
-		}
-;	}
+
+	}
 }
 
 
@@ -877,5 +895,5 @@ bool Four_legged_Robot::limitOver(std::vector<double> &t0, std::vector<double> &
 	{
 		ret = true;
 	}
-	return false;
+	return ret;
 }

@@ -41,6 +41,10 @@ public:
 	*/
 	Four_legged_Robot();
 	/**
+	*@brief コピーコンストラクタ
+	*/
+	Four_legged_Robot(Four_legged_Robot &fo);
+	/**
 	*@brief デストラクタ
 	*/
 	~Four_legged_Robot();

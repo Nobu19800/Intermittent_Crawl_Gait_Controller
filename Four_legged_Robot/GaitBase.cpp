@@ -33,6 +33,9 @@ GaitBase::GaitBase(Leg_Object *ls, Body_Object *bo)
 	dir = WALK_STOP;
 
 	min_margin = DEFAULT_MIN_MARGIN;
+
+	stride = 0;
+	next_state = WALK_PAUSE;
 }
 
 /**

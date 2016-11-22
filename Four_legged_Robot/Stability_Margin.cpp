@@ -25,7 +25,10 @@
 */
 Stability_Margin::Stability_Margin()
 {
-
+	distance = 0;
+	slope = 0;
+	ne_distance = 0;
+	stb_dir = STB_X_PLUS;
 }
 
 /**
@@ -279,8 +282,8 @@ Stability_Margin Stability_Margin::calc_distance(Vector3d pos0, Vector3d pos1, S
 
 
 		double at = -1.0 / a;
-		double bt = 1;
-		double ct = 0;
+		//double bt = 1;
+		
 
 
 		s.slope = at;
@@ -291,7 +294,7 @@ Stability_Margin Stability_Margin::calc_distance(Vector3d pos0, Vector3d pos1, S
 		}
 		else
 		{
-
+			double ct = 0;
 			double xt = (c - ct) / (-(a - at));
 			double yt = -a * xt - c;
 
