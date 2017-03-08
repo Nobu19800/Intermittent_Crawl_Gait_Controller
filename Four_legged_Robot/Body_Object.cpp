@@ -28,14 +28,6 @@ Body_Object::Body_Object()
 	intermittent_x_offset = 0;
 	intermittent_y_offset = 0;
 
-	rotete_vel = 0;
-	lx = 0;
-	ly = 0;
-	lz = 0;
-	mass = 0;
-	last_state = MOVE_STOP;
-	rotate_len = 0;
-	offset_angle = 0;
 
 
 	set_position(Vector3d(0, 0, 0));
@@ -75,7 +67,7 @@ void Body_Object::update()
 		current_pos(0) = current_pos(0) + diff_x*cos(current_rot(2)) - diff_y*sin(current_rot(2));
 		current_pos(1) = current_pos(1) + diff_x*sin(current_rot(2)) + diff_y*cos(current_rot(2));
 
-
+		//std::cout << "test\t" << diff_x << "\t" << diff_y << "\t" << current_rot(2) << "\t" << current_pos(1) << std::endl;
 		current_rot(2) = current_rot(2) + rotete_vel*sampling_time;
 
 		count++;

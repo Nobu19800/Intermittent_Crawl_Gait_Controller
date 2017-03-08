@@ -97,7 +97,9 @@ Intermittent_Crawl_Gait_Controller::Intermittent_Crawl_Gait_Controller(RTC::Mana
     m_TrajectoryOut("Trajectory", m_Trajectory),
   m_current_poseOut("current_pose", m_current_pose),
   m_stability_marginOut("stability_margin", m_stability_margin),
-  m_NE_stability_marginOut("NE_stability_margin", m_NE_stability_margin)
+  m_NE_stability_marginOut("NE_stability_margin", m_NE_stability_margin),
+  m_LeggedRobotCommonInterface_ServoPort("LeggedRobotCommonInterface_Servo"),
+  m_LeggedRobotCommonInterface_RobotPort("LeggedRobotCommonInterface_Robot")
 
     // </rtc-template>
 {
@@ -129,6 +131,12 @@ RTC::ReturnCode_t Intermittent_Crawl_Gait_Controller::onInitialize()
 	// Set service provider to Ports
 
 	// Set service consumers to Ports
+	m_LeggedRobotCommonInterface_ServoPort.registerConsumer("LeggedRobotCommonInterface_Servo", "RTC::LeggedRobotCommonInterface_Servo", m_LeggedRobotCommonInterface_Servo);
+	m_LeggedRobotCommonInterface_RobotPort.registerConsumer("LeggedRobotCommonInterface_Robot", "RTC::LeggedRobotCommonInterface_Robot", m_LeggedRobotCommonInterface_Robot);
+
+	// Set CORBA Service Ports
+	addPort(m_LeggedRobotCommonInterface_ServoPort);
+	addPort(m_LeggedRobotCommonInterface_RobotPort);
 
 	// Set CORBA Service Ports
 
@@ -214,7 +222,7 @@ RTC::ReturnCode_t Intermittent_Crawl_Gait_Controller::onExecute(RTC::UniqueId ec
 	{
 		m_update_poseIn.read();
 		robot.body.current_pos(0) = m_update_pose.data.position.x;
-		robot.body.current_pos(1) = m_update_pose.data.position.x;
+		robot.body.current_pos(1) = m_update_pose.data.position.y;
 		robot.body.current_rot(2) = m_update_pose.data.heading;
 	}
 	if (m_target_velocityIn.isNew()){
@@ -254,7 +262,7 @@ RTC::ReturnCode_t Intermittent_Crawl_Gait_Controller::onExecute(RTC::UniqueId ec
 
 	
 	m_current_pose.data.position.x = robot.body.current_pos(0);
-	m_current_pose.data.position.y = robot.body.current_pos(0);
+	m_current_pose.data.position.y = robot.body.current_pos(1);
 	m_current_pose.data.heading = robot.body.current_rot(2);
 
 	setTimestamp(m_current_pose);
